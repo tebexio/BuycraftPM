@@ -1,0 +1,5 @@
+name: BuycraftMP
+main: Buycraft\PocketMine\BuycraftPlugin
+version: 0.1
+author: Tebex Limited
+api: 1.0.0
