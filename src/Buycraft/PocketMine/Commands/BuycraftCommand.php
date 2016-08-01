@@ -70,6 +70,7 @@ class BuycraftCommand extends Command
                     $this->plugin->getConfig()->set('secret', $secret);
                     $sender->sendMessage(TextFormat::GREEN . "Secret set!");
                 } catch (\Exception $e) {
+                    $this->plugin->getLogger()->logException($e);
                     $sender->sendMessage(TextFormat::RED . "This secret key appears to be invalid. Try again.");
                 }
                 break;
