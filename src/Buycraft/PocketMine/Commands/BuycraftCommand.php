@@ -29,7 +29,7 @@ class BuycraftCommand extends Command
         $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftMP plugin:");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft information" . TextFormat::GRAY . ": Retrieves public information about your web store.");
+        $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
     }
 
     /**
@@ -84,7 +84,7 @@ class BuycraftCommand extends Command
                 $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->plugin->getPluginApi(), false));
                 $sender->sendMessage(TextFormat::GREEN . "Force check successfully queued.");
                 break;
-            case "information":
+            case "info":
                 if (count($args) != 1)
                 {
                     $sender->sendMessage(TextFormat::RED . "This command doesn't take any arguments.");

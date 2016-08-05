@@ -35,6 +35,7 @@ class PluginApi
         curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftMP"]);
         curl_setopt($ctx, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
         return $ctx;
     }
 
