@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andrew
- * Date: 7/18/2016
- * Time: 3:00 PM
- */
 
 namespace Buycraft\PocketMine\Execution;
 

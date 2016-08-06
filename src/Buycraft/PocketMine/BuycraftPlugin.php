@@ -69,7 +69,7 @@ class BuycraftPlugin extends PluginBase
     }
 
     /**
-     * @return mixed
+     * @return DeleteCommandsTask
      */
     public function getDeleteCommandsTask()
     {
