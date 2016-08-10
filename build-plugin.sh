@@ -1,4 +1,12 @@
 #!/bin/bash
 
-rm BuycraftPM.phar
+# Clean up the existing phar
+rm -f BuycraftPM.phar
+
+# Check if phar.readonly is Off
+if [ `php -r 'print get_cfg_var("phar.readonly") ? "false" : "true";'` == false ]; then
+    echo "PHAR creation is not enabled in your php.ini. Please set phar.readonly = Off and try again."
+    exit 1
+fi
+
 phar pack -f BuycraftPM.phar -x "(.git|.idea)" .
