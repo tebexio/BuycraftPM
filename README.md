@@ -9,7 +9,7 @@ you acknowledge that this plugin is unstable.
 ## Compatibility
 
 We are committed to making sure that BuycraftMP works on as many PocketMine-MP forks as reasonably possible. The Buycraft
-team tests and ensures that full functionality for BuycraftMP is available on **PocketMine-MP** and **Genisys**.
+team tests and ensures that full functionality for BuycraftMP is available on **PocketMine-MP**, **ClearSky** and **Genisys**.
 
 Other forks may work, but are not tested by Buycraft and you may be unable to obtain support for issues that arise.
 
