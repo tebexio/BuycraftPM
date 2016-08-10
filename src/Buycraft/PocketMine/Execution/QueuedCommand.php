@@ -14,7 +14,9 @@ class QueuedCommand
 
     /**
      * QueuedCommand constructor.
-     * @param $command
+     * @param $command mixed
+     * @param $username string
+     * @param $needOnline boolean
      */
     public function __construct($command, $username, $needOnline)
     {

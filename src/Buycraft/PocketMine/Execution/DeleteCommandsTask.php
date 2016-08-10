@@ -16,7 +16,7 @@ class DeleteCommandsTask extends PluginTask
 
     /**
      * DeleteCommandsTask constructor.
-     * @param $plugin
+     * @param $pluginApi
      */
     public function __construct(PluginApi $pluginApi)
     {

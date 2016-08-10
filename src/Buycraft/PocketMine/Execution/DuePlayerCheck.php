@@ -20,6 +20,7 @@ class DuePlayerCheck extends AsyncTask
 
     /**
      * DuePlayerCheck constructor.
+     * @param PluginApi $pluginApi
      * @param $allowReschedule boolean
      */
     public function __construct(PluginApi $pluginApi, $allowReschedule)
