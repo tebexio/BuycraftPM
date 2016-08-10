@@ -56,6 +56,12 @@ class BuycraftCommand extends Command
         switch ($args[0])
         {
             case "secret":
+                if (!($sender instanceof ConsoleCommandSender))
+                {
+                    $sender->sendMessage(TextFormat::RED . "This command must be run from the console.");
+                    return true;
+                }
+
                 if (count($args) != 2)
                 {
                     $sender->sendMessage(TextFormat::RED . "This command requires a secret key.");
@@ -64,15 +70,7 @@ class BuycraftCommand extends Command
 
                 $secret = $args[1];
 
-                // TODO: This is bad, but okay.
-                try {
-                    $this->plugin->changeSecret($secret);
-                    $this->plugin->getConfig()->set('secret', $secret);
-                    $sender->sendMessage(TextFormat::GREEN . "Secret set!");
-                } catch (\Exception $e) {
-                    $this->plugin->getLogger()->logException($e);
-                    $sender->sendMessage(TextFormat::RED . "This secret key appears to be invalid. Try again.");
-                }
+                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new SecretVerificationTask($secret));
                 break;
             case "forcecheck":
                 if (count($args) != 1)

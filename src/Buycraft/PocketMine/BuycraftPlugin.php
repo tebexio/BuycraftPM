@@ -115,19 +115,21 @@ class BuycraftPlugin extends PluginBase
     }
 
     /**
-     * Attempts to change the current secret key. Will not always work, but due to the "design" of threaded PHP, this
+     * Attempts to change the current API object. Will not always work, but due to the "design" of threaded PHP, this
      * is the only way we can accomplish this.
-     * @param $key string
+     * @param $newApi PluginApi
+     * @param $information mixed
      */
-    public function changeSecret($key)
+    public function changeApi(PluginApi $newApi, $information)
     {
-        $newApi = new PluginApi($key);
-        $this->verifyInformation($newApi);
-
-        // If we got here, the key seems to work.
         $this->pluginApi = $newApi;
         $this->getServer()->getScheduler()->cancelTasks($this);
         $this->startInitialTasks();
+
+        // change information if required (for secret command)
+        if ($information !== NULL) {
+            $this->serverInformation = $information;
+        }
     }
 
     private function startInitialTasks()
@@ -146,6 +148,4 @@ class BuycraftPlugin extends PluginBase
     {
         return $this->serverInformation;
     }
-
-
 }
