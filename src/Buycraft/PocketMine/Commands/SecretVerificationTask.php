@@ -35,7 +35,6 @@ class SecretVerificationTask extends AsyncTask
             $this->setResult($api->basicGet("/information"));
         } catch (\Exception $e)
         {
-            // TODO: Does this work?
             $this->setResult($e);
         }
     }
