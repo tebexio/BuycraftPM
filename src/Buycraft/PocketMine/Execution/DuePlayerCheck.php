@@ -69,31 +69,27 @@ class DuePlayerCheck extends AsyncTask
         BuycraftPlugin::getInstance()->setAllDue($result['all_due']);
 
         // See if we can execute some commands right now
-        if ($result['execute_offline'])
-        {
+        if ($result['execute_offline']) {
             BuycraftPlugin::getInstance()->getLogger()->info("Executing commands that can be run now...");
             $server->getScheduler()->scheduleAsyncTask(new ImmediateExecutionRunner($this->pluginApi));
         }
 
         // Check for player command execution we can do.
-        $canProcessNow = array_slice(array_filter($result['all_due'], function($due) use ($server) {
+        $canProcessNow = array_slice(array_filter($result['all_due'], function ($due) use ($server) {
             return $server->getPlayerExact($due->name) != NULL;
         }), 0, self::MAXIMUM_ONLINE_PLAYERS_TO_PROCESS);
 
-        if (count($canProcessNow) > 0)
-        {
+        if (count($canProcessNow) > 0) {
             BuycraftPlugin::getInstance()->getLogger()->info("Running commands for " . count($canProcessNow) . " online player(s)...");
 
             $at = 1;
-            foreach ($canProcessNow as $due)
-            {
+            foreach ($canProcessNow as $due) {
                 $this->scheduleDelayedAsyncTask(new PlayerCommandExecutor($this->pluginApi, $due), 10 * $at++);
             }
         }
 
         // Reschedule this task if desired.
-        if ($this->allowReschedule)
-        {
+        if ($this->allowReschedule) {
             // PocketMine-MP doesn't allow us to directly delay the eventual execution of an asynchronous task, so
             // a workaround must be used.
             $nextDelay = $result['next_delay'];

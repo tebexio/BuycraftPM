@@ -33,44 +33,35 @@ class QueuedCommand
     {
         $player = Server::getInstance()->getPlayerExact($this->username);
 
-        if ($this->needOnline)
-        {
-            if ($player == NULL)
-            {
+        if ($this->needOnline) {
+            if ($player == NULL) {
                 return false;
             }
         }
 
         // Check delay.
-        if (property_exists($this->command->conditions, "delay"))
-        {
-            $after = $this->queuedTime + (int) $this->command->conditions->delay;
-            if (time() < $after)
-            {
+        if (property_exists($this->command->conditions, "delay")) {
+            $after = $this->queuedTime + (int)$this->command->conditions->delay;
+            if (time() < $after) {
                 return false;
             }
         }
 
         // Check inventory slots.
-        if (property_exists($this->command->conditions, "slots"))
-        {
+        if (property_exists($this->command->conditions, "slots")) {
             // Needing inventory slots implies that the player is online, too.
-            if ($player == NULL)
-            {
+            if ($player == NULL) {
                 return false;
             }
 
             $count = 0;
-            for ($i = 0; $i < $player->getInventory()->getSize(); $i++)
-            {
-                if ($player->getInventory()->getItem($i)->getId() === 0)
-                {
+            for ($i = 0; $i < $player->getInventory()->getSize(); $i++) {
+                if ($player->getInventory()->getItem($i)->getId() === 0) {
                     $count++;
                 }
             }
 
-            if ($count < (int) $this->command->conditions->slots)
-            {
+            if ($count < (int)$this->command->conditions->slots) {
                 return false;
             }
         }

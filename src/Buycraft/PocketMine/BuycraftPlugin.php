@@ -17,34 +17,57 @@ class BuycraftPlugin extends PluginBase
     private $serverInformation;
     private $allDue = array();
 
+    /**
+     * @return BuycraftPlugin
+     */
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
+
     public function onEnable()
     {
         self::$instance = $this;
 
         $this->saveDefaultConfig();
         $secret = $this->getConfig()->get('secret');
-        if ($secret)
-        {
+        if ($secret) {
             $api = new PluginApi($secret);
-            try
-            {
+            try {
                 $this->verifyInformation($api);
                 $this->pluginApi = $api;
                 $this->startInitialTasks();
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->getLogger()->warning("Unable to verify information");
                 $this->getLogger()->logException($e);
             }
-        }
-        else
-        {
+        } else {
             $this->getLogger()->info("Looks like this is your first time using Buycraft. Set up your server by using 'buycraft secret <key>'.");
         }
 
         $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener(), $this);
         $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
+    }
+
+    private function verifyInformation(PluginApi $api)
+    {
+        $this->serverInformation = $api->basicGet("/information");
+
+        // Nag if the store is in online mode
+        if ($this->serverInformation->account->online_mode) {
+            $this->getLogger()->warning("Your Buycraft store is set to online mode. As Minecraft Pocket Edition " .
+                "has no username authentication, this is likely a mistake.");
+            $this->getLogger()->warning("This message is safe to ignore, but you may wish to use a separate web store set to offline mode.");
+        }
+    }
+
+    private function startInitialTasks()
+    {
+        $this->commandExecutionTask = new CommandExecutor($this);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
+        $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
+        $this->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->pluginApi, true));
     }
 
     public function onDisable()
@@ -77,14 +100,6 @@ class BuycraftPlugin extends PluginBase
     }
 
     /**
-     * @return BuycraftPlugin
-     */
-    public static function getInstance()
-    {
-        return self::$instance;
-    }
-
-    /**
      * @return array
      */
     public function getAllDue(): array
@@ -99,19 +114,6 @@ class BuycraftPlugin extends PluginBase
     {
         // Because PHP logic.
         $this->allDue = (array)$allDue;
-    }
-
-    private function verifyInformation(PluginApi $api)
-    {
-        $this->serverInformation = $api->basicGet("/information");
-
-        // Nag if the store is in online mode
-        if ($this->serverInformation->account->online_mode)
-        {
-            $this->getLogger()->warning("Your Buycraft store is set to online mode. As Minecraft Pocket Edition " .
-                "has no username authentication, this is likely a mistake.");
-            $this->getLogger()->warning("This message is safe to ignore, but you may wish to use a separate web store set to offline mode.");
-        }
     }
 
     /**
@@ -130,15 +132,6 @@ class BuycraftPlugin extends PluginBase
         if ($information !== NULL) {
             $this->serverInformation = $information;
         }
-    }
-
-    private function startInitialTasks()
-    {
-        $this->commandExecutionTask = new CommandExecutor($this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
-        $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
-        $this->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->pluginApi, true));
     }
 
     /**

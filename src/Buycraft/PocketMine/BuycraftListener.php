@@ -12,8 +12,7 @@ class BuycraftListener implements Listener
     public function onPlayerJoin(PlayerJoinEvent $event)
     {
         $lowerName = strtolower($event->getPlayer()->getName());
-        if (array_key_exists($lowerName, BuycraftPlugin::getInstance()->getAllDue()))
-        {
+        if (array_key_exists($lowerName, BuycraftPlugin::getInstance()->getAllDue())) {
             $duePlayer = BuycraftPlugin::getInstance()->getAllDue()[$lowerName];
             unset(BuycraftPlugin::getInstance()->getAllDue()[$lowerName]);
 

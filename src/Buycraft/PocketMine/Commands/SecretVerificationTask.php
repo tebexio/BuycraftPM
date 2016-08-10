@@ -29,12 +29,10 @@ class SecretVerificationTask extends AsyncTask
      */
     public function onRun()
     {
-        try
-        {
+        try {
             $api = new PluginApi($this->secret);
             $this->setResult($api->basicGet("/information"));
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->setResult($e);
         }
     }
@@ -42,15 +40,11 @@ class SecretVerificationTask extends AsyncTask
     public function onCompletion(Server $server)
     {
         $result = $this->getResult();
-        if ($result instanceof \Exception)
-        {
+        if ($result instanceof \Exception) {
             BuycraftPlugin::getInstance()->getLogger()->logException($result);
             BuycraftPlugin::getInstance()->getLogger()->error(TextFormat::RED . "This secret key appears to be invalid. Try again.");
-        }
-        else
-        {
-            if ($result->account->online_mode)
-            {
+        } else {
+            if ($result->account->online_mode) {
                 BuycraftPlugin::getInstance()->getLogger()->warning("Your Buycraft store is set to online mode. As Minecraft Pocket Edition " .
                     "has no username authentication, this is likely a mistake.");
                 BuycraftPlugin::getInstance()->getLogger()->warning("This message is safe to ignore, but you may wish to use a separate web store set to offline mode.");

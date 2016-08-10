@@ -24,14 +24,6 @@ class BuycraftCommand extends Command
         $this->plugin = $plugin;
     }
 
-    private function sendHelp(CommandSender $sender)
-    {
-        $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftMP plugin:");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
-    }
-
     /**
      * @param CommandSender $sender
      * @param string $commandLabel
@@ -41,29 +33,24 @@ class BuycraftCommand extends Command
      */
     public function execute(CommandSender $sender, $commandLabel, array $args)
     {
-        if (!$sender->hasPermission('buycraft.admin'))
-        {
+        if (!$sender->hasPermission('buycraft.admin')) {
             $sender->sendMessage(TextFormat::RED . "You don't have permission to use Buycraft administrative commands.");
             return true;
         }
 
-        if (count($args) == 0)
-        {
+        if (count($args) == 0) {
             $this->sendHelp($sender);
             return true;
         }
 
-        switch ($args[0])
-        {
+        switch ($args[0]) {
             case "secret":
-                if (!($sender instanceof ConsoleCommandSender))
-                {
+                if (!($sender instanceof ConsoleCommandSender)) {
                     $sender->sendMessage(TextFormat::RED . "This command must be run from the console.");
                     return true;
                 }
 
-                if (count($args) != 2)
-                {
+                if (count($args) != 2) {
                     $sender->sendMessage(TextFormat::RED . "This command requires a secret key.");
                     return true;
                 }
@@ -73,8 +60,7 @@ class BuycraftCommand extends Command
                 $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new SecretVerificationTask($secret));
                 break;
             case "forcecheck":
-                if (count($args) != 1)
-                {
+                if (count($args) != 1) {
                     $sender->sendMessage(TextFormat::RED . "This command doesn't take any arguments.");
                     return true;
                 }
@@ -83,14 +69,12 @@ class BuycraftCommand extends Command
                 $sender->sendMessage(TextFormat::GREEN . "Force check successfully queued.");
                 break;
             case "info":
-                if (count($args) != 1)
-                {
+                if (count($args) != 1) {
                     $sender->sendMessage(TextFormat::RED . "This command doesn't take any arguments.");
                     return true;
                 }
 
-                if ($this->plugin->getServerInformation() == null)
-                {
+                if ($this->plugin->getServerInformation() == null) {
                     $sender->sendMessage(TextFormat::RED . "No server information found (did you forget to set your secret?)");
                     return true;
                 }
@@ -103,5 +87,13 @@ class BuycraftCommand extends Command
         }
 
         return true;
+    }
+
+    private function sendHelp(CommandSender $sender)
+    {
+        $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftMP plugin:");
+        $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
+        $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
+        $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
     }
 }

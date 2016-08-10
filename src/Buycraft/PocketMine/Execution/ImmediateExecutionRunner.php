@@ -33,8 +33,7 @@ class ImmediateExecutionRunner extends AsyncTask
 
     public function onCompletion(Server $server)
     {
-        foreach ($this->getResult() as $command)
-        {
+        foreach ($this->getResult() as $command) {
             BuycraftPlugin::getInstance()->getCommandExecutionTask()->queue($command, $command->player->name, false);
         }
     }

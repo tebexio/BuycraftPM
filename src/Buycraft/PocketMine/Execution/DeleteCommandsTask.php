@@ -33,14 +33,11 @@ class DeleteCommandsTask extends PluginTask
      */
     public function onRun($currentTick)
     {
-        if (count($this->commandIds) > self::MAXIMUM_COMMANDS_TO_POST)
-        {
+        if (count($this->commandIds) > self::MAXIMUM_COMMANDS_TO_POST) {
             // Only consider the first MAXIMUM_COMMANDS_TO_POST commands.
             $toPost = array_slice($this->commandIds, 0, self::MAXIMUM_COMMANDS_TO_POST);
             $this->commandIds = array_diff($this->commandIds, $toPost);
-        }
-        else
-        {
+        } else {
             // Copy the array
             $toPost = $this->commandIds;
             $this->commandIds = array();
@@ -56,27 +53,23 @@ class DeleteCommandsTask extends PluginTask
      */
     public function sendAllCommands()
     {
-        if (count($this->commandIds) > self::MAXIMUM_COMMANDS_TO_POST)
-        {
+        if (count($this->commandIds) > self::MAXIMUM_COMMANDS_TO_POST) {
             $chunked = array_chunk($this->commandIds, self::MAXIMUM_COMMANDS_TO_POST);
-            foreach ($chunked as $chunk)
-            {
+            foreach ($chunked as $chunk) {
                 BuycraftPlugin::getInstance()->getPluginApi()->deleteCommands($chunk);
             }
-        }
-        else
-        {
+        } else {
             BuycraftPlugin::getInstance()->getPluginApi()->deleteCommands($this->commandIds);
         }
     }
 
     /**
+     * Queues a command to be marked complete.
      * @param $id integer
      */
     public function queue($id)
     {
-        if (!in_array($id, $this->commandIds))
-        {
+        if (!in_array($id, $this->commandIds)) {
             $this->commandIds[] = $id;
         }
     }

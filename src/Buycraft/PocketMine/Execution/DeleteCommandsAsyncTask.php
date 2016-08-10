@@ -3,10 +3,8 @@
 namespace Buycraft\PocketMine\Execution;
 
 
-use Buycraft\PocketMine\BuycraftPlugin;
 use Buycraft\PocketMine\PluginApi;
 use pocketmine\scheduler\AsyncTask;
-use pocketmine\scheduler\PluginTask;
 
 class DeleteCommandsAsyncTask extends AsyncTask
 {
@@ -31,6 +29,6 @@ class DeleteCommandsAsyncTask extends AsyncTask
      */
     public function onRun()
     {
-        $this->pluginApi->deleteCommands((array) $this->commands);
+        $this->pluginApi->deleteCommands((array)$this->commands);
     }
 }
