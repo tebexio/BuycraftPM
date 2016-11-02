@@ -57,7 +57,8 @@ class BuycraftPlugin extends PluginBase
         if ($this->serverInformation->account->online_mode) {
             $this->getLogger()->warning("Your Buycraft store is set to online mode. As Minecraft Pocket Edition " .
                 "has no username authentication, this is likely a mistake.");
-            $this->getLogger()->warning("This message is safe to ignore, but you may wish to use a separate web store set to offline mode.");
+            $this->getLogger()->warning("This message is safe to ignore, however Buycraft strongly recommends you use " .
+                "an offline mode store.");
         }
     }
 
