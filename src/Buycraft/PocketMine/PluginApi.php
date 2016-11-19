@@ -62,7 +62,7 @@ class PluginApi
     private function initializeCurl($url)
     {
         $ctx = curl_init($url);
-        curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftMP"]);
+        curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM"]);
         curl_setopt($ctx, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
@@ -76,23 +76,16 @@ class PluginApi
      */
     public function deleteCommands($ids)
     {
-        if (!is_array($ids) || count($ids) == 0) {
+        if (count($ids) == 0) {
             throw new \Exception("Passed ids parameter is not a non-empty array.");
         }
 
-        // Combine keys and values for http_build_query()
-        $keys = array();
-        for ($i = 0; $i < count($ids); $i++) {
-            $keys[] = 'ids[' . $i . ']';
-        }
-        $initial_query = http_build_query(array_combine($keys, $ids));
-        $final_query = preg_replace('/%5B[0-9]+%5D/simU', '[]', $initial_query);
-
+		$query = "ids[]=" . implode('&ids[]=', $ids);
         $ctx = $this->initializeCurl(self::BUYCRAFT_PLUGIN_API_URL . "/queue");
         curl_setopt($ctx, CURLOPT_FAILONERROR, true);
         curl_setopt($ctx, CURLOPT_POST, 1);
         curl_setopt($ctx, CURLOPT_CUSTOMREQUEST, "DELETE");
-        curl_setopt($ctx, CURLOPT_POSTFIELDS, $final_query);
+        curl_setopt($ctx, CURLOPT_POSTFIELDS, $query);
         $result = curl_exec($ctx);
         curl_close($ctx);
 

@@ -36,7 +36,7 @@ class CommandExecutor extends PluginTask
         $successfully_executed = array();
 
         // Run all commands, but only at most MAXIMUM_COMMANDS_TO_RUN commands.
-        foreach ($this->commands as $command) {
+        foreach ($this->commands as $id => $command) {
             if (count($successfully_executed) >= self::MAXIMUM_COMMANDS_TO_RUN) {
                 break;
             }
@@ -52,20 +52,12 @@ class CommandExecutor extends PluginTask
         // Now queue all the successfully run commands to be removed from the command queue.
         foreach ($successfully_executed as $executed) {
             BuycraftPlugin::getInstance()->getDeleteCommandsTask()->queue($executed->getCommandId());
+			unset($this->commands[$successfully_executed->getCommandId()]);
         }
-        $this->commands = array_udiff($this->commands, $successfully_executed, function ($one, $two) {
-            return $one->getCommandId() - $two->getCommandId();
-        });
     }
 
     public function queue($command, $username, $online)
     {
-        foreach ($this->commands as $inArrayCommand) {
-            if ($command->id === $inArrayCommand->getCommandId()) {
-                return;
-            }
-        }
-
-        $this->commands[] = new QueuedCommand($command, $username, $online);
+        $this->commands[$command->id] = new QueuedCommand($command, $username, $online);
     }
 }
