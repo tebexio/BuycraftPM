@@ -64,6 +64,11 @@ class BuycraftCommand extends Command
                     $sender->sendMessage(TextFormat::RED . "This command doesn't take any arguments.");
                     return true;
                 }
+                
+                if ($this->plugin->getPluginApi() == null) {
+                    $sender->sendMessage(TextFormat::RED . "You didn't set your secret (or it is invalid). Please set it and try again.");
+                    return true;
+                }
 
                 $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->plugin->getPluginApi(), false));
                 $sender->sendMessage(TextFormat::GREEN . "Force check successfully queued.");
