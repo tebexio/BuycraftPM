@@ -66,6 +66,7 @@ class PluginApi
         curl_setopt($ctx, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
         return $ctx;
     }
 
