@@ -52,7 +52,7 @@ class CommandExecutor extends PluginTask
         // Now queue all the successfully run commands to be removed from the command queue.
         foreach ($successfully_executed as $executed) {
             BuycraftPlugin::getInstance()->getDeleteCommandsTask()->queue($executed->getCommandId());
-			unset($this->commands[$successfully_executed->getCommandId()]);
+			unset($this->commands[$executed->getCommandId()]);
         }
     }
 
