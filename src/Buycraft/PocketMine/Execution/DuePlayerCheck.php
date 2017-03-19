@@ -54,7 +54,7 @@ class DuePlayerCheck extends AsyncTask
             sleep(mt_rand(5, 15) / 10);
 
             $page++;
-        } while (!$result->meta->more);
+        } while ($result->meta->more);
 
         $this->setResult(array(
             'all_due' => $allDue,
