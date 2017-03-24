@@ -71,6 +71,10 @@ class PluginApi
         {
             curl_setopt($ctx, CURLOPT_CAINFO, $this->dataFolder . "comodo_ecc.pem");
         }
+        else
+        {
+            curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
+        }
         curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
         return $ctx;
     }
