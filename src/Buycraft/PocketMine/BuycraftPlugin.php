@@ -27,12 +27,31 @@ class BuycraftPlugin extends PluginBase
 
     public function onEnable()
     {
+        // Ensure cURL is available and supports SSL.
+        if (!extension_loaded("curl"))
+        {
+            $this->getLogger()->error("BuycraftPM requires the curl extension to be installed with SSL support. Halting...");
+            return;
+        }
+
+        $version = curl_version();
+        $ssl_supported = ($version['features'] & CURL_VERSION_SSL);
+        if (!$ssl_supported)
+        {
+            $this->getLogger()->error("BuycraftPM requires the curl extension to be installed with SSL support. Halting...");
+            return;
+        }
+
         self::$instance = $this;
 
         $this->saveDefaultConfig();
+
+        // Save the COMODO ECC root certificate so we can communicate with Buycraft
+        $this->saveResource("comodo_ecc.pem");
+
         $secret = $this->getConfig()->get('secret');
         if ($secret) {
-            $api = new PluginApi($secret);
+            $api = new PluginApi($secret, $this->getDataFolder());
             try {
                 $this->verifyInformation($api);
                 $this->pluginApi = $api;

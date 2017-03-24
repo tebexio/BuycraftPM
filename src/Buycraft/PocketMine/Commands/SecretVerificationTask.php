@@ -12,14 +12,17 @@ use pocketmine\utils\TextFormat;
 class SecretVerificationTask extends AsyncTask
 {
     private $secret;
+    private $dataFolder;
 
     /**
      * SecretVerificationTask constructor.
      * @param $secret string
+     * @param $dataFolder string
      */
-    public function __construct($secret)
+    public function __construct($secret, $dataFolder)
     {
         $this->secret = $secret;
+        $this->dataFolder = $dataFolder;
     }
 
     /**
@@ -30,7 +33,7 @@ class SecretVerificationTask extends AsyncTask
     public function onRun()
     {
         try {
-            $api = new PluginApi($this->secret);
+            $api = new PluginApi($this->secret, $this->dataFolder);
             $this->setResult($api->basicGet("/information"));
         } catch (\Exception $e) {
             $this->setResult($e);
@@ -50,7 +53,7 @@ class SecretVerificationTask extends AsyncTask
                 BuycraftPlugin::getInstance()->getLogger()->warning("This message is safe to ignore, but you may wish to use a separate web store set to offline mode.");
             }
 
-            BuycraftPlugin::getInstance()->changeApi(new PluginApi($this->secret), $result);
+            BuycraftPlugin::getInstance()->changeApi(new PluginApi($this->secret, $this->dataFolder), $result);
             BuycraftPlugin::getInstance()->getConfig()->set('secret', $this->secret);
             BuycraftPlugin::getInstance()->getLogger()->info(TextFormat::GREEN . "Secret set!");
         }

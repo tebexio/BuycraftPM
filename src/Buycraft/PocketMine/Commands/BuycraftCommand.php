@@ -57,7 +57,7 @@ class BuycraftCommand extends Command
 
                 $secret = $args[1];
 
-                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new SecretVerificationTask($secret));
+                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new SecretVerificationTask($secret, $this->plugin->getDataFolder()));
                 break;
             case "forcecheck":
                 if (count($args) != 1) {
@@ -96,7 +96,7 @@ class BuycraftCommand extends Command
 
     private function sendHelp(CommandSender $sender)
     {
-        $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftMP plugin:");
+        $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftPM plugin:");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");

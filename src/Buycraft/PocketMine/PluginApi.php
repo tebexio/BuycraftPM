@@ -8,14 +8,17 @@ class PluginApi
     const BUYCRAFT_PLUGIN_API_URL = "https://plugin.buycraft.net";
 
     private $secret;
+    private $dataFolder;
 
     /**
      * ApiUtil constructor.
      * @param $secret string
+     * @param $dataFolder string
      */
-    public function __construct($secret)
+    public function __construct($secret, $dataFolder)
     {
         $this->secret = $secret;
+        $this->dataFolder = $dataFolder;
     }
 
     /**
@@ -64,7 +67,10 @@ class PluginApi
         $ctx = curl_init($url);
         curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM"]);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
+        if ($this->dataFolder)
+        {
+            curl_setopt($ctx, CURLOPT_CAINFO, $this->dataFolder . "comodo_ecc.pem");
+        }
         curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
         return $ctx;
     }
