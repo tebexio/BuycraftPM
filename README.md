@@ -16,3 +16,6 @@ Other forks may work, but are not tested by Buycraft and you may be unable to ob
 ## Building the plugin
 
 To build the plugin, run `./build-plugin.sh` on any *nix host (OS X and Linux are tested by us).
+
+## Support
+If you are a Buycraft customer and you need any assistance with this plugin, please contact our support team through your Buycraft account.
