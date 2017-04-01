@@ -51,7 +51,9 @@ class DuePlayerCheck extends AsyncTask
             }
 
             // Sleep for a while between fetches.
-            sleep(mt_rand(5, 15) / 10);
+            if ($page > 1) {
+                sleep(mt_rand(5, 15) / 10);
+            }
 
             $page++;
         } while ($result->meta->more);
