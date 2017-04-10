@@ -51,7 +51,7 @@ class AnalyticsSend extends AsyncTask
     public function onRun()
     {
         $ctx = curl_init(self::ANALYTICS_URL);
-        curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM"]);
+        curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM", 'Content-Type: application/json']);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
