@@ -6,6 +6,7 @@ use Buycraft\PocketMine\Commands\BuycraftCommand;
 use Buycraft\PocketMine\Execution\CommandExecutor;
 use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
+use Buycraft\PocketMine\Util\AnalyticsSend;
 use pocketmine\plugin\PluginBase;
 
 class BuycraftPlugin extends PluginBase
@@ -66,6 +67,8 @@ class BuycraftPlugin extends PluginBase
 
         $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener(), $this);
         $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
+
+        AnalyticsSend::sendAnalytics($this);
     }
 
     private function verifyInformation(PluginApi $api)
