@@ -67,8 +67,6 @@ class BuycraftPlugin extends PluginBase
 
         $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener(), $this);
         $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
-
-        AnalyticsSend::sendAnalytics($this);
     }
 
     private function verifyInformation(PluginApi $api)
@@ -91,6 +89,8 @@ class BuycraftPlugin extends PluginBase
         $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
         $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
         $this->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->pluginApi, true));
+
+        AnalyticsSend::sendAnalytics($this);
     }
 
     public function onDisable()
