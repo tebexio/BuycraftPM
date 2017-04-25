@@ -60,10 +60,11 @@ class AnalyticsSend extends AsyncTask
         curl_setopt($ctx, CURLOPT_FAILONERROR, true);
 
         $result = curl_exec($ctx);
+        $err = curl_error($ctx);
         curl_close($ctx);
 
         if ($result === FALSE) {
-            throw new \Exception("Unable to send analytics.");
+            throw new \Exception("Unable to send analytics: " . $err);
         }
     }
 }
