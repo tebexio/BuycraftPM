@@ -36,7 +36,7 @@ class ReportUtil
             $report_lines[] = "Web store URL: " . $information->account->domain;
             $report_lines[] = "Web store name: " . $information->account->name;
             $report_lines[] = "Web store currency: " . $information->account->currency->iso_4217;
-            $report_lines[] = "Web store in online mode? " . $information->account->online_mode;
+            $report_lines[] = "Web store in online mode? " . ($information->account->online_mode ? 'yes' : 'no');
 
             $report_lines[] = "Server name: " . $information->server->name;
             $report_lines[] = "Server ID: " . $information->server->id;
