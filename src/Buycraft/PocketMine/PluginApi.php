@@ -97,10 +97,11 @@ class PluginApi
         curl_setopt($ctx, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_setopt($ctx, CURLOPT_POSTFIELDS, $query);
         $result = curl_exec($ctx);
+        $err = curl_error($ctx);
         curl_close($ctx);
 
         if ($result === FALSE) {
-            throw new \Exception("Unable to delete commands.");
+            throw new \Exception("Unable to delete commands: " . $err);
         }
     }
 }
