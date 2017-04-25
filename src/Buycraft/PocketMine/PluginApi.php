@@ -67,14 +67,7 @@ class PluginApi
         $ctx = curl_init($url);
         curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM"]);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
-        if ($this->dataFolder)
-        {
-            curl_setopt($ctx, CURLOPT_CAINFO, $this->dataFolder . "comodo_ecc.pem");
-        }
-        else
-        {
-            curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
-        }
+        curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
         return $ctx;
     }

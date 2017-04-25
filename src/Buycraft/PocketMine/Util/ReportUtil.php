@@ -10,29 +10,6 @@ use pocketmine\utils\Utils;
 class ReportUtil
 {
     /**
-     * Captures the output of phpinfo(). If possible, it will try using `exec()` before resorting to using object
-     * buffering in the current process.
-     * @return array
-     */
-    public static function capturePhpinfo() {
-        if (function_exists("exec")) {
-            // Execute the existing PHP binary with the --info parameter. We'll prefer this method as it's
-            // less prone to breaking things, and most shared hosts are too dumb to block this.
-            $out = [];
-            exec(PHP_BINARY . " --info", $out);
-            return $out;
-        }
-
-        // In the event that didn't work, we'll run phpinfo() in this current process and capture the output with
-        // ob_*() functions.
-        ob_start();
-        phpinfo();
-        $output = ob_get_contents();
-        ob_end_clean();
-        return explode('\n', $output);
-    }
-
-    /**
      * Generates the main part of the report that requires access to resources that can only be safely accessed in the
      * server thread.
      * @return array
@@ -88,17 +65,14 @@ class ReportUtil
         foreach($checks as $name => $url) {
             $ctx = curl_init($url);
             curl_setopt($ctx, CURLOPT_FAILONERROR, true);
-            if ($name === 'Buycraft plugin API') {
-                curl_setopt($ctx, CURLOPT_CAINFO, BuycraftPlugin::getInstance()->getDataFolder() . "comodo_ecc.pem");
-            } else {
-                curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
-            }
+            curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
             $result = curl_exec($ctx);
             if ($result === FALSE) {
                 $results[] = "Can't access " . $name . " (" . $url . "): " . curl_error($ctx);
             } else {
-                $results[] = "Can access " . $name . " (" . $url . "):";
+                $results[] = "Can access " . $name . " (" . $url . ")";
             }
             curl_close($ctx);
         }

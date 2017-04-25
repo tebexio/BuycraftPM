@@ -47,9 +47,6 @@ class BuycraftPlugin extends PluginBase
 
         $this->saveDefaultConfig();
 
-        // Save the COMODO ECC root certificate so we can communicate with Buycraft
-        $this->saveResource("comodo_ecc.pem");
-
         $secret = $this->getConfig()->get('secret');
         if ($secret) {
             $api = new PluginApi($secret, $this->getDataFolder());
