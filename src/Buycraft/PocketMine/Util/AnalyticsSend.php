@@ -11,6 +11,7 @@ namespace Buycraft\PocketMine\Util;
 
 use Buycraft\PocketMine\BuycraftPlugin;
 use pocketmine\scheduler\AsyncTask;
+use pocketmine\Server;
 
 class AnalyticsSend extends AsyncTask
 {
@@ -60,10 +61,20 @@ class AnalyticsSend extends AsyncTask
         curl_setopt($ctx, CURLOPT_FAILONERROR, true);
 
         $result = curl_exec($ctx);
+        $err = curl_error($ctx);
         curl_close($ctx);
 
         if ($result === FALSE) {
-            throw new \Exception("Unable to send analytics.");
+            $this->setResult("Unable to send analytics: " . $err);
+        }
+    }
+
+    public function onCompletion(Server $server)
+    {
+        $err = $this->getResult();
+        if ($err)
+        {
+            BuycraftPlugin::getInstance()->getLogger()->warning("Unable to send analytics: " . $err);
         }
     }
 }
