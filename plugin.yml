@@ -1,5 +1,5 @@
 name: BuycraftPM
 main: Buycraft\PocketMine\BuycraftPlugin
-version: 0.2.1
+version: 0.4
 author: Tebex Limited
 api: [2.0.0, 3.0.0, 3.0.0-ALPHA4, 3.0.0-ALPHA5]
