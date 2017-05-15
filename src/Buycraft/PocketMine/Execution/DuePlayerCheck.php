@@ -40,6 +40,11 @@ class DuePlayerCheck extends AsyncTask
         $allDue = array();
 
         do {
+            // Sleep for a while between fetches.
+            if ($page > 1) {
+                sleep(mt_rand(5, 15) / 10);
+            }
+            
             $result = $this->pluginApi->basicGet("/queue?limit=" . self::PLAYERS_PER_PAGE . "&page=" . $page);
 
             if (count($result->players) == 0) {
@@ -49,9 +54,6 @@ class DuePlayerCheck extends AsyncTask
             foreach ($result->players as $player) {
                 $allDue[strtolower($player->name)] = $player;
             }
-
-            // Sleep for a while between fetches.
-            sleep(mt_rand(5, 15) / 10);
 
             $page++;
         } while ($result->meta->more);

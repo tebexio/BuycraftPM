@@ -6,6 +6,7 @@ use Buycraft\PocketMine\Commands\BuycraftCommand;
 use Buycraft\PocketMine\Execution\CommandExecutor;
 use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
+use Buycraft\PocketMine\Util\AnalyticsSend;
 use pocketmine\plugin\PluginBase;
 
 class BuycraftPlugin extends PluginBase
@@ -46,9 +47,6 @@ class BuycraftPlugin extends PluginBase
 
         $this->saveDefaultConfig();
 
-        // Save the COMODO ECC root certificate so we can communicate with Buycraft
-        $this->saveResource("comodo_ecc.pem");
-
         $secret = $this->getConfig()->get('secret');
         if ($secret) {
             $api = new PluginApi($secret, $this->getDataFolder());
@@ -88,6 +86,8 @@ class BuycraftPlugin extends PluginBase
         $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
         $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
         $this->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->pluginApi, true));
+
+        AnalyticsSend::sendAnalytics($this);
     }
 
     public function onDisable()

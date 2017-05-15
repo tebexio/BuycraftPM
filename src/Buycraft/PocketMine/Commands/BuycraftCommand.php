@@ -5,6 +5,8 @@ namespace Buycraft\PocketMine\Commands;
 
 use Buycraft\PocketMine\BuycraftPlugin;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
+use Buycraft\PocketMine\Util\FinalizeReportTask;
+use Buycraft\PocketMine\Util\ReportUtil;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
@@ -89,6 +91,16 @@ class BuycraftCommand extends Command
                 $sender->sendMessage(TextFormat::GREEN . "Web store URL: " . $this->plugin->getServerInformation()->account->domain);
                 $sender->sendMessage(TextFormat::GREEN . "Server currency is " . $this->plugin->getServerInformation()->account->currency->iso_4217);
                 break;
+            case "report":
+                if (!($sender instanceof ConsoleCommandSender)) {
+                    $sender->sendMessage(TextFormat::RED . "This command must be run from the console.");
+                    return true;
+                }
+
+                $sender->sendMessage(TextFormat::YELLOW . "Generating report, please wait...");
+                $lines = ReportUtil::generateBaseReport();
+                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new FinalizeReportTask($lines));
+                break;
         }
 
         return true;
@@ -100,5 +112,6 @@ class BuycraftCommand extends Command
         $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
         $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
+        $sender->sendMessage(TextFormat::GREEN . "/buycraft report" . TextFormat::GRAY . ": Generates a report you can send to Buycraft support.");
     }
 }
