@@ -22,7 +22,7 @@ class AnalyticsSend extends AsyncTask
 
     public function __construct($json, $secret)
     {
-        parent::__construct();
+        //parent::__construct();
         $this->json = $json;
         $this->secret = $secret;
     }

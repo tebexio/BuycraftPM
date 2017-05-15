@@ -14,7 +14,7 @@ class FinalizeReportTask extends AsyncTask
 
     public function __construct($lines)
     {
-        parent::__construct();
+        //parent::__construct();
         $this->lines = $lines;
         $this->fn = BuycraftPlugin::getInstance()->getDataFolder() . 'report-' . date('Y-m-d-H-i-s') . '.txt';
     }
