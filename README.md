@@ -3,8 +3,11 @@
 BuycraftPM is the official port of the Buycraft plugin to PocketMine-MP. BuycraftPM closely follows BuycraftX in both
 functionality and behavior as much as possible.
 
-This port is still a work in progress and is *NOT* stable. It may not work properly or completely. By using this plugin,
-you acknowledge that this plugin is unstable.
+## Contributing
+
+We welcome contributions from the community. Please refer to the CONTRIBUTING.md file for more details. By submitting code to us, you agree to the 
+terms set out in the CONTRIBUTING.md file
+
 
 ## Compatibility
 
