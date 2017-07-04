@@ -9,4 +9,4 @@ if [ `php -r 'print ini_get("phar.readonly") ? "false" : "true";'` == false ]; t
     exit 1
 fi
 
-phar pack -f BuycraftPM.phar -x "(.git|.idea)" .
+phar pack -c gz -f BuycraftPM.phar -x "(.git|.idea)" .
