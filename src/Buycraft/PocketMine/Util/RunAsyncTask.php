@@ -29,7 +29,7 @@ class RunAsyncTask extends PluginTask
      *
      * @return void
      */
-    public function onRun($currentTick)
+    public function onRun(int$currentTick)
     {
         Server::getInstance()->getScheduler()->scheduleAsyncTask($this->asyncTask);
     }
