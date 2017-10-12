@@ -25,8 +25,6 @@ class DeleteCommandsAsyncTask extends AsyncTask
     /**
      * Actions to execute when run
      *
-     * @param $currentTick
-     *
      * @return void
      */
     public function onRun()
