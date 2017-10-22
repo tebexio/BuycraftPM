@@ -1,0 +1,12 @@
+language: php
+php:
+  - 7.1
+
+matrix:
+  fast_finish: true
+
+script:
+  - phpunit
+  - pwd
+  - ./build-plugin.sh
+
