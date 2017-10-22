@@ -7,5 +7,6 @@ matrix:
 
 script:
   - phpunit
-  - build-plugin.sh
+  - pwd
+  - ./build-plugin.sh
 
