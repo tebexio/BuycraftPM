@@ -62,7 +62,7 @@ class BuycraftPlugin extends PluginBase
             $this->getLogger()->info("Looks like this is your first time using Buycraft. Set up your server by using 'buycraft secret <key>'.");
         }
 
-        $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener($this), $this);
         $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
     }
 
@@ -81,7 +81,7 @@ class BuycraftPlugin extends PluginBase
 
     private function startInitialTasks()
     {
-        $this->commandExecutionTask = new CommandExecutor($this);
+        $this->commandExecutionTask = new CommandExecutor();
         $this->getServer()->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
         $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
         $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);

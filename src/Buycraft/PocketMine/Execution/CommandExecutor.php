@@ -31,7 +31,7 @@ class CommandExecutor extends PluginTask
      *
      * @return void
      */
-    public function onRun(int$currentTick)
+    public function onRun(int $currentTick)
     {
         $successfully_executed = array();
 
