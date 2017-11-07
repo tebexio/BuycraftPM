@@ -50,7 +50,7 @@ class PluginApi
             throw new \Exception("Result can't be decoded as JSON.");
         }
 
-        if (property_exists($result, 'error_code')) {
+        if (isset($result['error_code'])) {
             throw new \Exception("Error " . $result->error_code . ": " . $result->error_message);
         }
 
