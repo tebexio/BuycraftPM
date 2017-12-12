@@ -3,6 +3,7 @@
 namespace Buycraft\PocketMine\Execution;
 
 
+use Buycraft\PocketMine\BuycraftPlugin;
 use pocketmine\Server;
 
 class QueuedCommand
@@ -18,10 +19,11 @@ class QueuedCommand
      * @param $username string
      * @param $needOnline boolean
      */
-    public function __construct($command, $username, $needOnline)
+    public function __construct($command, $username, $needOnline, $xuid = '')
     {
         $this->command = $command;
         $this->username = $username;
+        $this->xuid = $xuid;
         $this->queuedTime = time();
         $this->needOnline = $needOnline;
     }
@@ -31,12 +33,15 @@ class QueuedCommand
         return $this->command->id;
     }
 
+
+
     public function canExecute()
     {
-        $player = Server::getInstance()->getPlayerExact($this->username);
+        $plugin = BuycraftPlugin::getInstance();
+        $player = $plugin->getPlayer(Server::getInstance(), $this->username, $this->xuid);
 
         if ($this->needOnline) {
-            if ($player == NULL) {
+            if (!$player) {
                 return false;
             }
         }
@@ -73,6 +78,26 @@ class QueuedCommand
 
     public function getFinalCommand()
     {
-        return preg_replace('/[{\\(<\\[](name|player|username)[}\\)>\\]]/i', $this->username, $this->command->command);
+        $command = str_replace(
+            [
+                '{name}',
+                '{player}',
+                '{username}',
+                '{uuid}',
+                '{xuid}',
+                '{id}'
+            ],
+            [
+                $this->username,
+                $this->username,
+                $this->username,
+                $this->xuid,
+                $this->xuid,
+                $this->xuid,
+            ],
+            $this->command->command
+        );
+
+        return $command;
     }
 }

@@ -88,6 +88,10 @@ class BuycraftCommand extends Command
 
                 $sender->sendMessage(TextFormat::GREEN . "Server " . $this->plugin->getServerInformation()->server->name . " on account " .
                     $this->plugin->getServerInformation()->account->name);
+                if (isset($this->plugin->getServerInformation()->game_type)) {
+                    $sender->sendMessage(TextFormat::GREEN . "Web store Type: "
+                        . $this->plugin->getServerInformation()->game_type);
+                }
                 $sender->sendMessage(TextFormat::GREEN . "Web store URL: " . $this->plugin->getServerInformation()->account->domain);
                 $sender->sendMessage(TextFormat::GREEN . "Server currency is " . $this->plugin->getServerInformation()->account->currency->iso_4217);
                 break;
