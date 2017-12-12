@@ -10,12 +10,13 @@ namespace Buycraft\PocketMine\Util;
 
 
 use Buycraft\PocketMine\BuycraftPlugin;
+use Buycraft\PocketMine\PluginApi;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
 
 class AnalyticsSend extends AsyncTask
 {
-    const ANALYTICS_URL = "https://plugin.buycraft.net/analytics/startup";
+    const ANALYTICS_URL = PluginApi::BUYCRAFT_PLUGIN_API_URL . "/analytics/startup";
 
     private $json;
     private $secret;

@@ -37,7 +37,9 @@ class PlayerCommandExecutor extends AsyncTask
     public function onCompletion(Server $server)
     {
         foreach ($this->getResult() as $command) {
-            BuycraftPlugin::getInstance()->getCommandExecutionTask()->queue($command, $this->due->name, true);
+            BuycraftPlugin::getInstance()
+                ->getCommandExecutionTask()
+                ->queue($command, $this->due->name, true, $this->due->uuid ? $this->due->uuid : "");
         }
     }
 }

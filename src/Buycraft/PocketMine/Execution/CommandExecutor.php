@@ -56,8 +56,8 @@ class CommandExecutor extends PluginTask
         }
     }
 
-    public function queue($command, $username, $online)
+    public function queue($command, $username, $online, $xuid = '')
     {
-        $this->commands[$command->id] = new QueuedCommand($command, $username, $online);
+        $this->commands[$command->id] = new QueuedCommand($command, $username, $online, $xuid);
     }
 }

@@ -67,23 +67,24 @@ class DuePlayerCheck extends AsyncTask
 
     public function onCompletion(Server $server)
     {
+        $plugin = BuycraftPlugin::getInstance();
         $result = $this->getResult();
-        BuycraftPlugin::getInstance()->getLogger()->info("Found " . count($result['all_due']) . " due player(s).");
-        BuycraftPlugin::getInstance()->setAllDue($result['all_due']);
+        $plugin->getLogger()->info("Found " . count($result['all_due']) . " due player(s).");
+        $plugin->setAllDue($result['all_due']);
 
         // See if we can execute some commands right now
         if ($result['execute_offline']) {
-            BuycraftPlugin::getInstance()->getLogger()->info("Executing commands that can be run now...");
+            $plugin->getLogger()->info("Executing commands that can be run now...");
             $server->getScheduler()->scheduleAsyncTask(new ImmediateExecutionRunner($this->pluginApi));
         }
 
         // Check for player command execution we can do.
-        $canProcessNow = array_slice(array_filter($result['all_due'], function ($due) use ($server) {
-            return $server->getPlayerExact($due->name) != NULL;
+        $canProcessNow = array_slice(array_filter($result['all_due'], function ($due) use ($server, $plugin) {
+            return $plugin->getPlayer($server, $due->name, $due->uuid ? $due->uuid : "");
         }), 0, self::MAXIMUM_ONLINE_PLAYERS_TO_PROCESS);
 
         if (count($canProcessNow) > 0) {
-            BuycraftPlugin::getInstance()->getLogger()->info("Running commands for " . count($canProcessNow) . " online player(s)...");
+            $plugin->getLogger()->info("Running commands for " . count($canProcessNow) . " online player(s)...");
 
             $at = 1;
             foreach ($canProcessNow as $due) {

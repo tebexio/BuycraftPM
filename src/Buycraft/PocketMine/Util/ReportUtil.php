@@ -4,6 +4,7 @@ namespace Buycraft\PocketMine\Util;
 
 
 use Buycraft\PocketMine\BuycraftPlugin;
+use Buycraft\PocketMine\PluginApi;
 use pocketmine\Server;
 use pocketmine\utils\Utils;
 
@@ -55,7 +56,7 @@ class ReportUtil
         $checks = [
             // Notice that we're not using just plugin.buycraft.net. That's because it throws an error. We'll compromise
             // and use the PocketMine versions page.
-            'Buycraft plugin API' => 'https://plugin.buycraft.net/versions/pocketmine',
+            'Buycraft plugin API' => PluginApi::BUYCRAFT_PLUGIN_API_URL . '/versions/pocketmine',
             "Google over HTTPS" => 'https://encrypted.google.com',
             "Google over HTTP" => 'http://www.google.com'
         ];

@@ -8,6 +8,7 @@ use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
 use Buycraft\PocketMine\Util\AnalyticsSend;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Server;
 
 class BuycraftPlugin extends PluginBase
 {
@@ -70,13 +71,6 @@ class BuycraftPlugin extends PluginBase
     {
         $this->serverInformation = $api->basicGet("/information");
 
-        // Nag if the store is in online mode
-        if ($this->serverInformation->account->online_mode) {
-            $this->getLogger()->warning("Your Buycraft store is set to online mode. As Minecraft Pocket Edition " .
-                "has no username authentication, this is likely a mistake.");
-            $this->getLogger()->warning("This message is safe to ignore, however Buycraft strongly recommends you use " .
-                "an offline mode store.");
-        }
     }
 
     private function startInitialTasks()
@@ -125,6 +119,26 @@ class BuycraftPlugin extends PluginBase
     public function getAllDue(): array
     {
         return $this->allDue;
+    }
+
+    public function getPlayer(Server $server, $username, $xuid = '')
+    {
+        if ($xuid != '') {
+            $this->getLogger()->info("Checking for existing of player with XUID {$xuid}");
+            foreach ($server->getOnlinePlayers() as $player) {
+                if ($player->getXuid() === $xuid) {
+                    return $player;
+                }
+            }
+
+            return false;
+        }
+
+        $this->getLogger()->info("Checking for existing of player with Username {$username}");
+
+        $player = $server->getPlayerExact($username);
+
+        return $player ? $player : false;
     }
 
     /**
