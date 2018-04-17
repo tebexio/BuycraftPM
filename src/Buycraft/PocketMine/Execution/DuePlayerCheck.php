@@ -44,8 +44,14 @@ class DuePlayerCheck extends AsyncTask
             if ($page > 1) {
                 sleep(mt_rand(5, 15) / 10);
             }
-            
-            $result = $this->pluginApi->basicGet("/queue?limit=" . self::PLAYERS_PER_PAGE . "&page=" . $page);
+
+            try {
+                $result = $this->pluginApi->basicGet("/queue?limit=" . self::PLAYERS_PER_PAGE . "&page=" . $page);
+            } catch (\Exception $exception) {
+                $this->setResult($exception);
+
+                return;
+            }
 
             if (count($result->players) == 0) {
                 break;
@@ -69,27 +75,33 @@ class DuePlayerCheck extends AsyncTask
     {
         $plugin = BuycraftPlugin::getInstance();
         $result = $this->getResult();
-        $plugin->getLogger()->info("Found " . count($result['all_due']) . " due player(s).");
-        $plugin->setAllDue($result['all_due']);
 
-        // See if we can execute some commands right now
-        if ($result['execute_offline']) {
-            $plugin->getLogger()->info("Executing commands that can be run now...");
-            $server->getScheduler()->scheduleAsyncTask(new ImmediateExecutionRunner($this->pluginApi));
-        }
+        // Test if the result is an exception, which indicates something went wrong
+        if (!($result instanceof \Exception)) {
+            $plugin->getLogger()->info("Found " . count($result['all_due']) . " due player(s).");
+            $plugin->setAllDue($result['all_due']);
 
-        // Check for player command execution we can do.
-        $canProcessNow = array_slice(array_filter($result['all_due'], function ($due) use ($server, $plugin) {
-            return $plugin->getPlayer($server, $due->name, $due->uuid ? $due->uuid : "");
-        }), 0, self::MAXIMUM_ONLINE_PLAYERS_TO_PROCESS);
-
-        if (count($canProcessNow) > 0) {
-            $plugin->getLogger()->info("Running commands for " . count($canProcessNow) . " online player(s)...");
-
-            $at = 1;
-            foreach ($canProcessNow as $due) {
-                $this->scheduleDelayedAsyncTask(new PlayerCommandExecutor($this->pluginApi, $due), 10 * $at++);
+            // See if we can execute some commands right now
+            if ($result['execute_offline']) {
+                $plugin->getLogger()->info("Executing commands that can be run now...");
+                $server->getScheduler()->scheduleAsyncTask(new ImmediateExecutionRunner($this->pluginApi));
             }
+
+            // Check for player command execution we can do.
+            $canProcessNow = array_slice(array_filter($result['all_due'], function ($due) use ($server, $plugin) {
+                return $plugin->getPlayer($server, $due->name, $due->uuid ? $due->uuid : "");
+            }), 0, self::MAXIMUM_ONLINE_PLAYERS_TO_PROCESS);
+
+            if (count($canProcessNow) > 0) {
+                $plugin->getLogger()->info("Running commands for " . count($canProcessNow) . " online player(s)...");
+
+                $at = 1;
+                foreach ($canProcessNow as $due) {
+                    $this->scheduleDelayedAsyncTask(new PlayerCommandExecutor($this->pluginApi, $due), 10 * $at++);
+                }
+            }
+        } else {
+            $plugin->getLogger()->error("Check failed with message: " . $result->getMessage());
         }
 
         // Reschedule this task if desired.
