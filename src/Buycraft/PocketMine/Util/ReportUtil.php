@@ -10,12 +10,16 @@ use pocketmine\utils\Utils;
 
 class ReportUtil
 {
+
+    public static $secret;
     /**
      * Generates the main part of the report that requires access to resources that can only be safely accessed in the
      * server thread.
      * @return array
      */
     public static function generateBaseReport() {
+        ReportUtil::$secret = BuycraftPlugin::getInstance()->getPluginApi()->getSecret();
+
         $report_lines = [];
         $report_lines[] = "### Server Information ###";
         $report_lines[] = "Report generated on " . date('r');
@@ -56,7 +60,12 @@ class ReportUtil
         $checks = [
             // Notice that we're not using just plugin.buycraft.net. That's because it throws an error. We'll compromise
             // and use the PocketMine versions page.
-            'Buycraft plugin API' => PluginApi::BUYCRAFT_PLUGIN_API_URL . '/versions/pocketmine',
+            'Buycraft plugin API' => [
+                "url" => PluginApi::BUYCRAFT_PLUGIN_API_URL . '/versions/pocketmine',
+                "headers" => [
+                    "X-Buycraft-Secret" => ReportUtil::$secret
+                ]
+            ],
             "Google over HTTPS" => 'https://encrypted.google.com',
             "Google over HTTP" => 'http://www.google.com'
         ];
@@ -64,7 +73,20 @@ class ReportUtil
         $results = [];
 
         foreach($checks as $name => $url) {
-            $ctx = curl_init($url);
+
+            if (is_array($url)) {
+                $ctx = curl_init($url['url']);
+
+                $headers = [];
+                foreach ($url['headers'] as $k => $v){
+                    $headers[] =  "{$k}: " . $v . ",";
+                }
+                curl_setopt($ctx, CURLOPT_HTTPHEADER, [implode(", ", $headers), "User-Agent: BuycraftPM"]);
+                $url = $url['url'];
+            } else {
+                $ctx = curl_init($url);
+            }
+
             curl_setopt($ctx, CURLOPT_FAILONERROR, true);
             curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
