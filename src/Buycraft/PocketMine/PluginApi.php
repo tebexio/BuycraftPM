@@ -97,4 +97,9 @@ class PluginApi
             throw new \Exception("Unable to delete commands: " . $err);
         }
     }
+
+    public function getSecret()
+    {
+        return $this->secret;
+    }
 }
