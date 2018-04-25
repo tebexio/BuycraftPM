@@ -108,7 +108,7 @@ class DuePlayerCheck extends AsyncTask
         if ($this->allowReschedule) {
             // PocketMine-MP doesn't allow us to directly delay the eventual execution of an asynchronous task, so
             // a workaround must be used.
-            $nextDelay = $result['next_delay'];
+            $nextDelay = is_array($result) ? $result['next_delay'] : self::FALLBACK_DELAY;
             $this->scheduleDelayedAsyncTask(new DuePlayerCheck($this->pluginApi, true), $nextDelay * 20);
         }
     }
