@@ -124,7 +124,10 @@ class BuycraftPlugin extends PluginBase
     public function getPlayer(Server $server, $username, $xuid = '')
     {
         if ($xuid != '') {
-            $this->getLogger()->info("Checking for existing of player with XUID {$xuid}");
+            if($this->getConfig()->get('debug') == "true") {
+                $this->getLogger()->info("Checking for existing of player with XUID {$xuid}");
+            }
+
             foreach ($server->getOnlinePlayers() as $player) {
                 if ($player->getXuid() === $xuid) {
                     return $player;
@@ -133,8 +136,9 @@ class BuycraftPlugin extends PluginBase
 
             return false;
         }
-
-        $this->getLogger()->info("Checking for existing of player with Username {$username}");
+        if($this->getConfig()->get('debug') == "true") {
+            $this->getLogger()->info("Checking for existing of player with Username {$username}");
+        }
 
         $player = $server->getPlayerExact($username);
 
