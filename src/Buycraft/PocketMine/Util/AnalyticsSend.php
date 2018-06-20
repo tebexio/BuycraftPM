@@ -42,7 +42,7 @@ class AnalyticsSend extends AsyncTask
         ];
         $json = json_encode($data);
 
-        $plugin->getServer()->getScheduler()->scheduleAsyncTask(new AnalyticsSend($json, $plugin->getConfig()->get('secret')));
+        $plugin->getServer()->getAsyncPool()->submitTask(new AnalyticsSend($json, $plugin->getConfig()->get('secret')));
     }
 
     /**

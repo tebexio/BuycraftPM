@@ -4,10 +4,10 @@ namespace Buycraft\PocketMine\Execution;
 
 use Buycraft\PocketMine\BuycraftPlugin;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use pocketmine\Server;
 
-class CommandExecutor extends PluginTask
+class CommandExecutor extends Task
 {
     const MAXIMUM_COMMANDS_TO_RUN = 10;
 
@@ -15,14 +15,6 @@ class CommandExecutor extends PluginTask
      * @var array
      */
     private $commands = array();
-
-    /**
-     * CommandExecutor constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct(BuycraftPlugin::getInstance());
-    }
 
     /**
      * Actions to execute when run
