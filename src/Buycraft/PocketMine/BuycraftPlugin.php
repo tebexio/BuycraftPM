@@ -75,11 +75,11 @@ class BuycraftPlugin extends PluginBase
 
     private function startInitialTasks()
     {
-        $this->commandExecutionTask = new CommandExecutor($this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
+        $this->commandExecutionTask = new CommandExecutor();
+        $this->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
         $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
-        $this->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->pluginApi, true));
+        $this->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
+        $this->getServer()->getAsyncPool()->submitTask(new DuePlayerCheck($this->pluginApi, true));
 
         AnalyticsSend::sendAnalytics($this);
     }
@@ -159,7 +159,7 @@ class BuycraftPlugin extends PluginBase
     public function changeApi(PluginApi $newApi, $information)
     {
         $this->pluginApi = $newApi;
-        $this->getServer()->getScheduler()->cancelTasks($this);
+        $this->getScheduler()->cancelAllTasks();
         $this->startInitialTasks();
 
         // change information if required (for secret command)

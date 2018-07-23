@@ -59,7 +59,7 @@ class BuycraftCommand extends Command
 
                 $secret = $args[1];
 
-                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new SecretVerificationTask($secret, $this->plugin->getDataFolder()));
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new SecretVerificationTask($secret, $this->plugin->getDataFolder()));
                 break;
             case "forcecheck":
                 if (count($args) != 1) {
@@ -72,7 +72,7 @@ class BuycraftCommand extends Command
                     return true;
                 }
 
-                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new DuePlayerCheck($this->plugin->getPluginApi(), false));
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new DuePlayerCheck($this->plugin->getPluginApi(), false));
                 $sender->sendMessage(TextFormat::GREEN . "Force check successfully queued.");
                 break;
             case "info":
@@ -103,7 +103,7 @@ class BuycraftCommand extends Command
 
                 $sender->sendMessage(TextFormat::YELLOW . "Generating report, please wait...");
                 $lines = ReportUtil::generateBaseReport();
-                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(new FinalizeReportTask($lines));
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new FinalizeReportTask($lines));
                 break;
         }
 
