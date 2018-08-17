@@ -2,22 +2,30 @@
 
 namespace Buycraft\PocketMine;
 
+use Buycraft\PocketMine\Commands\BuyCommand;
 use Buycraft\PocketMine\Commands\BuycraftCommand;
 use Buycraft\PocketMine\Execution\CommandExecutor;
 use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
+use Buycraft\PocketMine\Execution\CategoryRefreshTask;
 use Buycraft\PocketMine\Util\AnalyticsSend;
+use Buycraft\PocketMine\Util\InventoryUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 
 class BuycraftPlugin extends PluginBase
 {
     private static $instance;
+
     private $pluginApi;
+    private $inventoryUtils;
+
     private $commandExecutionTask;
     private $deleteCommandsTask;
     private $serverInformation;
     private $allDue = array();
+    private $categoryRefreshTask = array();
+    private $categories = array();
 
     /**
      * @return BuycraftPlugin
@@ -51,6 +59,7 @@ class BuycraftPlugin extends PluginBase
         $secret = $this->getConfig()->get('secret');
         if ($secret) {
             $api = new PluginApi($secret, $this->getDataFolder());
+            $this->inventoryUtils = new InventoryUtils($this);
             try {
                 $this->verifyInformation($api);
                 $this->pluginApi = $api;
@@ -63,14 +72,14 @@ class BuycraftPlugin extends PluginBase
             $this->getLogger()->info("Looks like this is your first time using Buycraft. Set up your server by using 'buycraft secret <key>'.");
         }
 
-        $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener($this), $this);
         $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
+        $this->getServer()->getCommandMap()->register("buy", new BuyCommand($this));
     }
 
     private function verifyInformation(PluginApi $api)
     {
         $this->serverInformation = $api->basicGet("/information");
-
     }
 
     private function startInitialTasks()
@@ -79,6 +88,8 @@ class BuycraftPlugin extends PluginBase
         $this->getScheduler()->scheduleRepeatingTask($this->commandExecutionTask, 1);
         $this->deleteCommandsTask = new DeleteCommandsTask($this->pluginApi);
         $this->getScheduler()->scheduleRepeatingTask($this->deleteCommandsTask, 20);
+        $this->categoryRefreshTask = new CategoryRefreshTask($this);
+        $this->getScheduler()->scheduleRepeatingTask($this->categoryRefreshTask, 20 * 60 * 3);
         $this->getServer()->getAsyncPool()->submitTask(new DuePlayerCheck($this->pluginApi, true));
 
         AnalyticsSend::sendAnalytics($this);
@@ -174,5 +185,20 @@ class BuycraftPlugin extends PluginBase
     public function getServerInformation()
     {
         return $this->serverInformation;
+    }
+
+    public function setCategories(array $categories)
+    {
+        $this->categories = $categories;
+    }
+
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    public function getInventoryUtils()
+    {
+        return $this->inventoryUtils;
     }
 }

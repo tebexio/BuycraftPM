@@ -5,7 +5,7 @@ namespace Buycraft\PocketMine;
 
 class PluginApi
 {
-    const BUYCRAFT_PLUGIN_API_URL = "https://plugin.buycraft.net";
+    const BUYCRAFT_PLUGIN_API_URL = "http://plugin.dev.buycraft.net";
 
     private $secret;
     private $dataFolder;
@@ -27,10 +27,10 @@ class PluginApi
      * @return mixed
      * @throws \Exception
      */
-    public function basicGet($endpoint)
+    public function basicGet($endpoint, $assoc = false, $timeout = 5)
     {
         // Do a basic GET request
-        $ctx = $this->initializeCurl(self::BUYCRAFT_PLUGIN_API_URL . $endpoint);
+        $ctx = $this->initializeCurl(self::BUYCRAFT_PLUGIN_API_URL . $endpoint, $timeout);
         $body = curl_exec($ctx);
 
         // Did the request fail? If so, return an error.
@@ -44,14 +44,63 @@ class PluginApi
         curl_close($ctx);
 
         // Try to deserialize the response as JSON.
-        $result = json_decode($body);
+        $result = json_decode($body, $assoc);
 
         if ($result === NULL) {
             throw new \Exception("Result can't be decoded as JSON.");
         }
 
-        if (property_exists($result, 'error_code')) {
-            throw new \Exception("Error " . $result->error_code . ": " . $result->error_message);
+        if ($assoc) {
+            if (array_key_exists('error_code', $result)) {
+                throw new \Exception("Error " . $result['error_code'] . ": " . $result['error_message']);
+            }
+        } else {
+            if (property_exists($result, 'error_code')) {
+                throw new \Exception("Error " . $result->error_code . ": " . $result->error_message);
+            }
+        }
+
+        return $result;
+    }
+
+    public function post($endpoint, $data)
+    {
+        $data = json_encode($data);
+
+        $ctx = curl_init(self::BUYCRAFT_PLUGIN_API_URL . $endpoint);
+        curl_setopt($ctx, CURLOPT_HTTPHEADER, [
+            "X-Buycraft-Secret: " . $this->secret,
+            "User-Agent: BuycraftPM",
+            "Content-Type: application/json",
+            "Content-Length: " . strlen($data)
+        ]);
+
+        curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ctx, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ctx, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
+
+
+        $body = curl_exec($ctx);
+
+        if ($body === FALSE) {
+            $err = curl_error($ctx);
+            curl_close($ctx);
+
+            throw new \Exception("cURL request has failed: " . $err);
+        }
+
+        curl_close($ctx);
+
+        $result = json_decode($body, true);
+
+        if ($result === NULL) {
+            throw new \Exception("Result can't be decoded as JSON.");
+        }
+
+        if (array_key_exists('error_code', $result)) {
+            throw new \Exception("Error " . $result['error_code'] . ": " . $result['error_message']);
         }
 
         return $result;
@@ -62,13 +111,13 @@ class PluginApi
      * @param $url string
      * @return resource
      */
-    private function initializeCurl($url)
+    private function initializeCurl($url, $timeout = 5)
     {
         $ctx = curl_init($url);
         curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM"]);
         curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ctx, CURLOPT_TIMEOUT, $timeout);
         return $ctx;
     }
 
@@ -83,7 +132,7 @@ class PluginApi
             throw new \Exception("Passed ids parameter is not a non-empty array.");
         }
 
-		$query = "ids[]=" . implode('&ids[]=', $ids);
+        $query = "ids[]=" . implode('&ids[]=', $ids);
         $ctx = $this->initializeCurl(self::BUYCRAFT_PLUGIN_API_URL . "/queue");
         curl_setopt($ctx, CURLOPT_FAILONERROR, true);
         curl_setopt($ctx, CURLOPT_POST, 1);
