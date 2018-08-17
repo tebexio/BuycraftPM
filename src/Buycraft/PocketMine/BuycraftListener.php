@@ -55,30 +55,22 @@ class BuycraftListener implements Listener
                 if ($action->getInventory() instanceof CategoryInventory ||
                     $action->getInventory() instanceof PackageInventory) {
                     $event->setCancelled(true);
-                }
-            }
-        }
 
-
-        if (count($actions) == 2) {
-            reset($actions);
-            $action = $tr->getActions()[key($actions)];
-
-            if ($action instanceof SlotChangeAction) {
-                $target = $action->getTargetItem();
-                if ($target->getNamedTag()->hasTag("buycraft-continue", IntTag::class)) {
-                    if ($action->getInventory() instanceof CategoryInventory) {
-                        $event->setCancelled();
-                        $this->handleCategoryInventoryClick($event, $action);
-                    } elseif
-                    ($action->getInventory() instanceof PackageInventory) {
-                        $event->setCancelled();
-                        $this->handlePackageInventoryClick($event, $action);
+                    $target = $action->getTargetItem();
+                    if ($target->getNamedTag()->hasTag("buycraft-continue", IntTag::class)) {
+                        if ($action->getInventory() instanceof CategoryInventory) {
+                            $event->setCancelled();
+                            $this->handleCategoryInventoryClick($event, $action);
+                        } elseif
+                        ($action->getInventory() instanceof PackageInventory) {
+                            $event->setCancelled();
+                            $this->handlePackageInventoryClick($event, $action);
+                        }
                     }
+
                 }
             }
         }
-
     }
 
 
