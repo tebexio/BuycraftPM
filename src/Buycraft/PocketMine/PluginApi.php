@@ -5,7 +5,7 @@ namespace Buycraft\PocketMine;
 
 class PluginApi
 {
-    const BUYCRAFT_PLUGIN_API_URL = "http://plugin.dev.buycraft.net";
+    const BUYCRAFT_PLUGIN_API_URL = "https://plugin.buycraft.net";
 
     private $secret;
     private $dataFolder;
