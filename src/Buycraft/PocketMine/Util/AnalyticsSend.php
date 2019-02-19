@@ -30,19 +30,8 @@ class AnalyticsSend extends AsyncTask
 
     public static function sendAnalytics(BuycraftPlugin $plugin)
     {
-        $data = [
-            'server' => [
-                'platform' => 'pocketmine',
-                'platform_version' => $plugin->getServer()->getPocketMineVersion(),
-                'online_mode' => false
-            ],
-            'plugin' => [
-                'version' => $plugin->getDescription()->getVersion()
-            ]
-        ];
-        $json = json_encode($data);
 
-        $plugin->getServer()->getAsyncPool()->submitTask(new AnalyticsSend($json, $plugin->getConfig()->get('secret')));
+        //noop
     }
 
     /**
@@ -52,30 +41,11 @@ class AnalyticsSend extends AsyncTask
      */
     public function onRun()
     {
-        $ctx = curl_init(self::ANALYTICS_URL);
-        curl_setopt($ctx, CURLOPT_HTTPHEADER, ["X-Buycraft-Secret: " . $this->secret, "User-Agent: BuycraftPM", 'Content-Type: application/json']);
-        curl_setopt($ctx, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ctx, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ctx, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ctx, CURLOPT_POST, 1);
-        curl_setopt($ctx, CURLOPT_POSTFIELDS, $this->json);
-        curl_setopt($ctx, CURLOPT_FAILONERROR, true);
-
-        $result = curl_exec($ctx);
-        $err = curl_error($ctx);
-        curl_close($ctx);
-
-        if ($result === FALSE) {
-            $this->setResult("Unable to send analytics: " . $err);
-        }
+        //noop
     }
 
     public function onCompletion(Server $server)
     {
-        $err = $this->getResult();
-        if ($err)
-        {
-            BuycraftPlugin::getInstance()->getLogger()->warning("Unable to send analytics: " . $err);
-        }
+        //noop
     }
 }

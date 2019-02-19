@@ -4,11 +4,11 @@ namespace Buycraft\PocketMine;
 
 use Buycraft\PocketMine\Commands\BuyCommand;
 use Buycraft\PocketMine\Commands\BuycraftCommand;
+use Buycraft\PocketMine\Commands\BuycraftCommandAlias;
 use Buycraft\PocketMine\Execution\CommandExecutor;
 use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
 use Buycraft\PocketMine\Execution\CategoryRefreshTask;
-use Buycraft\PocketMine\Util\AnalyticsSend;
 use Buycraft\PocketMine\Util\InventoryUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -40,7 +40,7 @@ class BuycraftPlugin extends PluginBase
         // Ensure cURL is available and supports SSL.
         if (!extension_loaded("curl"))
         {
-            $this->getLogger()->error("BuycraftPM requires the curl extension to be installed with SSL support. Halting...");
+            $this->getLogger()->error("Tebex-PMMP requires the curl extension to be installed with SSL support. Halting...");
             return;
         }
 
@@ -48,7 +48,7 @@ class BuycraftPlugin extends PluginBase
         $ssl_supported = ($version['features'] & CURL_VERSION_SSL);
         if (!$ssl_supported)
         {
-            $this->getLogger()->error("BuycraftPM requires the curl extension to be installed with SSL support. Halting...");
+            $this->getLogger()->error("Tebex-PMMP requires the curl extension to be installed with SSL support. Halting...");
             return;
         }
 
@@ -73,7 +73,8 @@ class BuycraftPlugin extends PluginBase
         }
 
         $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener($this), $this);
-        $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommand($this));
+        $this->getServer()->getCommandMap()->register("buycraft", new BuycraftCommandAlias($this, "buycraft"));
+        $this->getServer()->getCommandMap()->register("tebex", new BuycraftCommand($this, "tebex"));
         $this->getServer()->getCommandMap()->register("buy", new BuyCommand($this));
     }
 
@@ -96,8 +97,6 @@ class BuycraftPlugin extends PluginBase
         $this->categoryRefreshTask = new CategoryRefreshTask($this);
         $this->getScheduler()->scheduleRepeatingTask($this->categoryRefreshTask, 20 * 60 * 3);
         $this->getServer()->getAsyncPool()->submitTask(new DuePlayerCheck($this->pluginApi, true));
-
-        AnalyticsSend::sendAnalytics($this);
     }
 
     public function onDisable()

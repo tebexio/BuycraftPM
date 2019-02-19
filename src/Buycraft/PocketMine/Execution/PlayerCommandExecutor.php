@@ -34,13 +34,18 @@ class PlayerCommandExecutor extends AsyncTask
         try {
             $this->setResult($this->pluginApi->basicGet('/queue/online-commands/' . $this->due->id)->commands);
         } catch (\Exception $e) {
-            BuycraftPlugin::getInstance()->getLogger()->warning("Unable to fetch commands for player");
-            BuycraftPlugin::getInstance()->getLogger()->logException($e);
+            $this->setResult($e);
+            return;
         }
     }
 
     public function onCompletion(Server $server)
     {
+        if ($this->getResult() instanceof \Exception) {
+            BuycraftPlugin::getInstance()->getLogger()->logException($this->getResult());
+            BuycraftPlugin::getInstance()->getLogger()->error(TextFormat::RED . "Unable to fetch online commands for player.");
+            return;
+        }
         foreach ($this->getResult() as $command) {
             BuycraftPlugin::getInstance()
                 ->getCommandExecutionTask()

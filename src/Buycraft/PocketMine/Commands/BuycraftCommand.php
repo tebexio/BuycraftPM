@@ -20,9 +20,9 @@ class BuycraftCommand extends Command
      * BuycraftCommand constructor.
      * @param BuycraftPlugin $plugin
      */
-    public function __construct(BuycraftPlugin $plugin)
+    public function __construct(BuycraftPlugin $plugin, string $cmd)
     {
-        parent::__construct("buycraft", "Buycraft administrative command.");
+        parent::__construct($cmd, "Buycraft administrative command.");
         $this->plugin = $plugin;
     }
 
@@ -112,10 +112,10 @@ class BuycraftCommand extends Command
 
     private function sendHelp(CommandSender $sender)
     {
-        $sender->sendMessage(TextFormat::GREEN . "Usage for the BuycraftPM plugin:");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft secret" . TextFormat::GRAY . ": Set your server's secret.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
-        $sender->sendMessage(TextFormat::GREEN . "/buycraft report" . TextFormat::GRAY . ": Generates a report you can send to Buycraft support.");
+        $sender->sendMessage(TextFormat::GREEN . "Usage for the Tebex-PMMP plugin:");
+        $sender->sendMessage(TextFormat::GREEN . "/tebex:secret" . TextFormat::GRAY . ": Set your server's secret.");
+        $sender->sendMessage(TextFormat::GREEN . "/tebex:forcecheck" . TextFormat::GRAY . ": Check for current purchases.");
+        $sender->sendMessage(TextFormat::GREEN . "/tebex:info" . TextFormat::GRAY . ": Retrieves public information about your web store.");
+        $sender->sendMessage(TextFormat::GREEN . "/tebex:report" . TextFormat::GRAY . ": Generates a report you can send to Buycraft support.");
     }
 }
