@@ -79,7 +79,12 @@ class BuycraftPlugin extends PluginBase
 
     private function verifyInformation(PluginApi $api)
     {
-        $this->serverInformation = $api->basicGet("/information");
+        try {
+            $this->serverInformation = $api->basicGet("/information");
+        } catch (\Exception $e) {
+            $this->getLogger()->warning("Unable to verify information");
+            $this->getLogger()->logException($e);
+        }
     }
 
     private function startInitialTasks()

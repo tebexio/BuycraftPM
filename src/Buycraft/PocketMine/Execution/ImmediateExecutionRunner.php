@@ -27,8 +27,13 @@ class ImmediateExecutionRunner extends AsyncTask
      */
     public function onRun()
     {
-        $response = $this->pluginApi->basicGet("/queue/offline-commands");
-        $this->setResult($response->commands);
+        try {
+            $response = $this->pluginApi->basicGet("/queue/offline-commands");
+            $this->setResult($response->commands);
+        } catch (\Exception $e) {
+            BuycraftPlugin::getInstance()->getLogger()->warning("Unable to fetch offline commands");
+            BuycraftPlugin::getInstance()->getLogger()->logException($e);
+        }
     }
 
     public function onCompletion(Server $server)
