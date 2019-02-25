@@ -6,6 +6,7 @@ use Buycraft\PocketMine\BuycraftPlugin;
 use Buycraft\PocketMine\PluginApi;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class ImmediateExecutionRunner extends AsyncTask
 {
@@ -39,7 +40,7 @@ class ImmediateExecutionRunner extends AsyncTask
     public function onCompletion(Server $server)
     {
         if ($this->getResult() instanceof \Exception) {
-            BuycraftPlugin::getInstance()->getLogger()->logException($this->getResult());
+            //BuycraftPlugin::getInstance()->getLogger()->logException($this->getResult());
             BuycraftPlugin::getInstance()->getLogger()->error(TextFormat::RED . "Unable to fetch offline commands.");
             return;
         }

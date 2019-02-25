@@ -5,6 +5,7 @@ namespace Buycraft\PocketMine;
 use Buycraft\PocketMine\Commands\BuyCommand;
 use Buycraft\PocketMine\Commands\BuycraftCommand;
 use Buycraft\PocketMine\Commands\BuycraftCommandAlias;
+use Buycraft\PocketMine\Commands\SecretVerificationTask;
 use Buycraft\PocketMine\Execution\CommandExecutor;
 use Buycraft\PocketMine\Execution\DeleteCommandsTask;
 use Buycraft\PocketMine\Execution\DuePlayerCheck;
@@ -12,6 +13,7 @@ use Buycraft\PocketMine\Execution\CategoryRefreshTask;
 use Buycraft\PocketMine\Util\InventoryUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
+use pocketmine\utils\Config;
 
 class BuycraftPlugin extends PluginBase
 {
@@ -66,10 +68,24 @@ class BuycraftPlugin extends PluginBase
                 $this->startInitialTasks();
             } catch (\Exception $e) {
                 $this->getLogger()->warning("Unable to verify information");
-                $this->getLogger()->logException($e);
+                //$this->getLogger()->logException($e);
             }
         } else {
-            $this->getLogger()->info("Looks like this is your first time using Buycraft. Set up your server by using 'buycraft secret <key>'.");
+
+            //Can we migrate?
+            if(file_exists($this->getDataFolder() . "../BuycraftPM/config.yml")){
+                $oldconfig = new Config($this->getDataFolder() . "../BuycraftPM/config.yml",Config::YAML);
+                if ($oldconfig->get("secret")) {
+                    $this->getLogger()->info("Migrating secret from old BuycraftPM plugin...");
+                    $this->getServer()->getAsyncPool()->submitTask(
+                        new SecretVerificationTask($oldconfig->get("secret"), $this->getDataFolder())
+                    );
+                }
+            } else {
+
+                $this->getLogger()
+                    ->info("Looks like this is your first time using Tebex. Set up your server by using 'tebex secret <key>'.");
+            }
         }
 
         $this->getServer()->getPluginManager()->registerEvents(new BuycraftListener($this), $this);
@@ -84,7 +100,7 @@ class BuycraftPlugin extends PluginBase
             $this->serverInformation = $api->basicGet("/information");
         } catch (\Exception $e) {
             $this->getLogger()->warning("Unable to verify information");
-            $this->getLogger()->logException($e);
+            //$this->getLogger()->logException($e);
         }
     }
 

@@ -44,7 +44,7 @@ class SecretVerificationTask extends AsyncTask
     {
         $result = $this->getResult();
         if ($result instanceof \Exception) {
-            BuycraftPlugin::getInstance()->getLogger()->logException($result);
+            //BuycraftPlugin::getInstance()->getLogger()->logException($result);
             BuycraftPlugin::getInstance()->getLogger()->error(TextFormat::RED . "This secret key appears to be invalid. Try again.");
         } else {
 

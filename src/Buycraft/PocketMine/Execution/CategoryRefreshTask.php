@@ -5,6 +5,7 @@ namespace Buycraft\PocketMine\Execution;
 
 use Buycraft\PocketMine\BuycraftPlugin;
 use pocketmine\scheduler\Task;
+use pocketmine\utils\TextFormat;
 
 class CategoryRefreshTask extends Task
 {
@@ -27,7 +28,7 @@ class CategoryRefreshTask extends Task
 
             $this->plugin->getLogger()->info("Category refresh complete.");
         } catch (\Exception $e) {
-            $this->plugin->getLogger()->logException($e);
+            //$this->plugin->getLogger()->logException($e);
             $this->plugin->getLogger()->error(TextFormat::RED . "Unable to fetch category listing.");
         }
     }

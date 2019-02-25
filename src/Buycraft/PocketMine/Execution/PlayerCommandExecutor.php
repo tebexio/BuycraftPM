@@ -7,6 +7,7 @@ use Buycraft\PocketMine\BuycraftPlugin;
 use Buycraft\PocketMine\PluginApi;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class PlayerCommandExecutor extends AsyncTask
 {
@@ -42,7 +43,7 @@ class PlayerCommandExecutor extends AsyncTask
     public function onCompletion(Server $server)
     {
         if ($this->getResult() instanceof \Exception) {
-            BuycraftPlugin::getInstance()->getLogger()->logException($this->getResult());
+            //BuycraftPlugin::getInstance()->getLogger()->logException($this->getResult());
             BuycraftPlugin::getInstance()->getLogger()->error(TextFormat::RED . "Unable to fetch online commands for player.");
             return;
         }

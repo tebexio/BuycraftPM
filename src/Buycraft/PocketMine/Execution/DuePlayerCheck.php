@@ -48,7 +48,7 @@ class DuePlayerCheck extends AsyncTask
             try {
                 $result = $this->pluginApi->basicGet("/queue?limit=" . self::PLAYERS_PER_PAGE . "&page=" . $page);
             } catch (\Exception $e) {
-                $this->setResult($result);
+                $this->setResult($e);
                 return;
             }
 

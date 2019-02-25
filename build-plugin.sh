@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Clean up the existing phar
-rm -f BuycraftPM.phar
+rm -f TebexPMMP.phar
 
 # Check if phar.readonly is Off
 if [ `php -r 'print ini_get("phar.readonly") ? "false" : "true";'` == false ]; then
@@ -9,4 +9,4 @@ if [ `php -r 'print ini_get("phar.readonly") ? "false" : "true";'` == false ]; t
     exit 1
 fi
 
-phar pack -c gz -f BuycraftPM.phar -x "(.git|.idea|CONTRIBUTING.md|tests|phpunit.xml|.travis.yml|build-plugin.sh)" .
+phar pack -c gz -f TebexPMMP.phar -x "(.git|.idea|CONTRIBUTING.md|tests|phpunit.xml|.travis.yml|build-plugin.sh)" .
