@@ -42,7 +42,7 @@ class DuePlayerCheck extends AsyncTask
         do {
             // Sleep for a while between fetches.
             if ($page > 1) {
-                sleep(mt_rand(5, 15) / 10);
+                usleep(mt_rand(5, 15) * 100000);
             }
 
             try {
