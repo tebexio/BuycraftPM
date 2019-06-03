@@ -12,6 +12,7 @@ use Buycraft\PocketMine\Execution\DuePlayerCheck;
 use Buycraft\PocketMine\Execution\CategoryRefreshTask;
 use Buycraft\PocketMine\Util\InventoryUtils;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 
@@ -145,11 +146,32 @@ class BuycraftPlugin extends PluginBase
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    public function getAllDue(): array
+    public function isDue(Player $player): bool
     {
-        return $this->allDue;
+        return isset($this->allDue[$player->getLowerCaseName()]);
+    }
+
+    /**
+     * @return object
+     */
+    public function getDue(Player $player)
+    {
+        return $this->allDue[$player->getLowerCaseName()];
+    }
+
+    public function removeDue(Player $player): void
+    {
+        unset($this->allDue[$player->getLowerCaseName()]);
+    }
+
+    /**
+     * @param array $allDue
+     */
+    public function setAllDue(array $allDue)
+    {
+        $this->allDue = $allDue;
     }
 
     public function getPlayer(Server $server, $username, $xuid = '')
@@ -170,15 +192,6 @@ class BuycraftPlugin extends PluginBase
         $player = $server->getPlayerExact($username);
 
         return $player ? $player : false;
-    }
-
-    /**
-     * @param array $allDue
-     */
-    public function setAllDue(array $allDue)
-    {
-        // Because PHP logic.
-        $this->allDue = (array)$allDue;
     }
 
     /**
