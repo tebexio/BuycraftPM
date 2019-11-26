@@ -78,7 +78,7 @@ class QueuedCommand
 
     public function getFinalCommand()
     {
-        $escaped = strpos($un, ' ') !== false ? '"' . $this->username . '"' : $this->username;
+        $escaped = strpos($this->username, ' ') !== false ? '"' . $this->username . '"' : $this->username;
         $command = str_replace(
             [
                 '{name}',
