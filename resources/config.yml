@@ -8,4 +8,4 @@ worker-limit: 2
 # Current GUI types are:
 # > "form"
 # > "inventory"
-categories-gui-type: "form"
+categories-gui-type: "inventory"
