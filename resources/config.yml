@@ -1,2 +1,11 @@
-# BuycraftPM Configuration
+# Tebex-PMMP Configuration
 secret: ''
+
+# Number of concurrent calls that can be requested
+worker-limit: 2
+
+# The type of GUI used to display categories.
+# Current GUI types are:
+# > "form"
+# > "inventory"
+categories-gui-type: "form"
