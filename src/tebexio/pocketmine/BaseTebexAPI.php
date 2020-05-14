@@ -20,11 +20,11 @@ abstract class BaseTebexAPI{
 	/** @var SSLConfiguration */
 	private $ssl_config;
 
-	public function __construct(TebexPlugin $plugin, string $secret, SSLConfiguration $ssl_config, int $workers){
-		$this->pool = new TebexThreadPool($plugin);
+	public function __construct(string $secret, SSLConfiguration $ssl_config, int $workers){
+		$this->pool = new TebexThreadPool();
 		$this->ssl_config = $ssl_config;
 		for($i = 0; $i < $workers; $i++){
-			$this->pool->addWorker(new TebexThread($secret, $ssl_config));
+			$this->pool->addWorker(new TebexThread($this->pool->getNotifier(), $secret, $ssl_config));
 		}
 		$this->pool->start();
 	}

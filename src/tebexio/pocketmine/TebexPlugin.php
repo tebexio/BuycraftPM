@@ -71,7 +71,7 @@ final class TebexPlugin extends PluginBase{
 		/** @var TebexInformation|TebexException $result */
 		$result = null;
 
-		$api = new TebexAPI($this, $secret, SSLConfiguration::recommended(), $this->worker_limit);
+		$api = new TebexAPI($secret, SSLConfiguration::recommended(), $this->worker_limit);
 		$api->getInformation(new TebexResponseHandler(
 			static function(TebexInformation $information) use(&$result) : void{ $result = $information; },
 			static function(TebexException $e) use(&$result) : void{ $result = $e; }

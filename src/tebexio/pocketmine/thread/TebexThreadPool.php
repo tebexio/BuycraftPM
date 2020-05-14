@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace tebexio\pocketmine\thread;
 
-use tebexio\pocketmine\TebexPlugin;
-use pocketmine\scheduler\ClosureTask;
+use pocketmine\Server;
+use pocketmine\snooze\SleeperNotifier;
 use UnderflowException;
 
 final class TebexThreadPool{
@@ -16,12 +16,17 @@ final class TebexThreadPool{
 	/** @var float */
 	private $latency = 0.0;
 
-	public function __construct(TebexPlugin $plugin){
-		$plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $currentTick) : void{
+	public function __construct(){
+		$this->notifier = new SleeperNotifier();
+		Server::getInstance()->getTickSleeper()->addNotifier($this->notifier, function() : void{
 			foreach($this->workers as $thread){
 				$this->collectThread($thread);
 			}
-		}), 1);
+		});
+	}
+
+	public function getNotifier() : SleeperNotifier{
+		return $this->notifier;
 	}
 
 	/**
@@ -78,7 +83,7 @@ final class TebexThreadPool{
 	 * @param TebexThread<mixed> $thread
 	 */
 	private function collectThread(TebexThread $thread) : void{
-		foreach($thread->collect() as $latency){
+		foreach($thread->collectPending() as $latency){
 			$this->latency = $latency;
 		}
 	}

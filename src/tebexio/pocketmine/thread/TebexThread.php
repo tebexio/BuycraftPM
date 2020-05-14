@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tebexio\pocketmine\thread;
 
+use pocketmine\snooze\SleeperNotifier;
 use function is_string;
 use Logger;
 use pocketmine\utils\MainLogger;
@@ -30,6 +31,9 @@ final class TebexThread extends Thread{
 	/** @var int */
 	private static $handler_ids = 0;
 
+	/** @var SleeperNotifier */
+	private $notifier;
+
 	/** @var Threaded<string> */
 	private $incoming;
 
@@ -51,7 +55,8 @@ final class TebexThread extends Thread{
 	/** @var string */
 	private $ca_path;
 
-	public function __construct(string $secret, SSLConfiguration $ssl_config){
+	public function __construct(SleeperNotifier $notifier, string $secret, SSLConfiguration $ssl_config){
+		$this->notifier = $notifier;
 		$this->ca_path = $ssl_config->getCAInfoPath();
 		$this->incoming = new Threaded();
 		$this->outgoing = new Threaded();
@@ -65,7 +70,7 @@ final class TebexThread extends Thread{
 		self::$handlers[$handler_id] = $handler;
 		++$this->busy_score;
 		$this->synchronized(function() : void{
-			$this->notify();
+			$this->notifyOne();
 		});
 	}
 
@@ -145,6 +150,7 @@ final class TebexThread extends Thread{
 				$this->outgoing[] = igbinary_serialize($response_holder);
 			}
 
+			$this->notifier->wakeupSleeper();
 			$this->sleep();
 		}
 	}
@@ -170,7 +176,7 @@ final class TebexThread extends Thread{
 	 *
 	 * @return Generator<float>
 	 */
-	public function collect() : Generator{
+	public function collectPending() : Generator{
 		while(($holder = $this->outgoing->shift()) !== null){
 			/** @var TebexResponseHolder $holder */
 			$holder = igbinary_unserialize($holder);
