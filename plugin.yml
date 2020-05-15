@@ -1,6 +1,12 @@
 name: Tebex-PMMP
-main: Buycraft\PocketMine\BuycraftPlugin
-version: 2.0.1
+main: tebexio\pocketmine\TebexPlugin
+version: 3.0.0
 author: Tebex Limited
 api: 3.0.0
 api-version: 3.0.0
+permissions:
+  buycraft.admin:
+    default: op
+    children:
+      tebex.admin:
+        default: op
