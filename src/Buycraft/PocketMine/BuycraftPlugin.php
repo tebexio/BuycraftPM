@@ -38,7 +38,7 @@ class BuycraftPlugin extends PluginBase
         return self::$instance;
     }
 
-    public function onEnable()
+    public function onEnable():void
     {
         // Ensure cURL is available and supports SSL.
         if (!extension_loaded("curl"))
@@ -116,7 +116,7 @@ class BuycraftPlugin extends PluginBase
         $this->getServer()->getAsyncPool()->submitTask(new DuePlayerCheck($this->pluginApi, true));
     }
 
-    public function onDisable()
+    public function onDisable():void
     {
         $this->saveConfig();
     }
